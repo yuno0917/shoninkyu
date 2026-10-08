@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>新卒の手取り計算機 ロジックのテスト</title>
+<style>
+  body { font-family: system-ui, "Yu Gothic UI", Meiryo, sans-serif; margin: 16px; line-height: 1.6; background: #fff; color: #1a1d21; }
+  #summary { font-size: 1.25rem; font-weight: 700; }
+  .pass { color: #2b8a3e; }
+  .fail { color: #c92a2a; font-weight: 700; }
+</style>
+</head>
+<body>
+<h1>ロジックのテスト</h1>
+<p id="summary">実行中…</p>
+<ul id="results"></ul>
+
+<script src="js/tk-data.js"></script>
+<script src="js/tk-calc.js"></script>
+<script>
+(function () {
+  'use strict';
+  const TK = window.TK;
+  const D = TK.DATA;
+  const results = [];
+  function test(name, fn) {
+    try { fn(); results.push({ name, ok: true }); }
+    catch (e) { results.push({ name, ok: false, msg: e && e.message ? e.message : String(e) }); }
+  }
+  function eq(a, b, label) {
+    const x = JSON.stringify(a), y = JSON.stringify(b);
+    if (x !== y) throw new Error((label ? label + ': ' : '') + '期待値 ' + y + ' / 実際 ' + x);
+  }
+
+  test('協会けんぽ 令和8年度の料率：47都道府県、東京9.85%・埼玉9.67%・大阪10.13%・佐賀10.55%・新潟9.21%', () => {
+    eq(D.prefectures.length, 47);
+    const r = c => D.prefectures.find(p => p.code === c).rate;
+    eq([r('13'), r('11'), r('27'), r('41'), r('15')], [9.85, 9.67, 10.13, 10.55, 9.21]);
+    eq([D.supportRate, D.pensionRate, D.employmentRate], [0.23, 18.3, 0.005]);
+  });
+  test('標準報酬月額の等級（50等級）と境目：229,999円→220,000円、230,000円→240,000円', () => {
+    eq(D.healthGrades.length, 50);
+    eq([TK.standardPay(229999), TK.standardPay(230000), TK.standardPay(50000), TK.standardPay(2000000)], [220000, 240000, 58000, 1390000]);
+    eq([TK.pensionStandard(58000), TK.pensionStandard(240000), TK.pensionStandard(1390000)], [88000, 240000, 650000]);
+  });
+  test('保険料の端数：50銭以下は切り捨て、50銭を超えると切り上げ', () => {
+    eq([TK.cashRound(5, 10), TK.cashRound(51, 100), TK.cashRound(1, 2), TK.cashRound(3, 4)], [0, 1, 0, 1]);
+    // 東京の保険料額表の折半額：2,856.5円 → 2,856円（58,000円・9.85%）
+    eq(TK.cashRound(58000 * 985, 20000), 2856);
+  });
+  test('東京・標準報酬24万円：健康保険＋支援金 12,096円、厚生年金 21,960円、雇用保険（23万円）1,150円', () => {
+    eq(TK.healthShare(240000, 9.85), 12096);   // 11,820 ＋ 276
+    eq(TK.pensionShare(240000), 21960);
+    eq(TK.employmentShare(230000), 1150);
+  });
+  test('源泉徴収（電子計算機の特例）：2026年 218,850円→5,010円、184,794円→3,800円', () => {
+    eq(TK.withholding(2026, 218850), 5010);
+    eq(TK.withholding(2026, 184794), 3800);
+    eq(TK.withholding(2026, 88000), 0);   // 控除のほうが大きいときは0円
+    eq(TK.withholding(2026, 0), 0);
+  });
+  test('源泉徴収：2027年 218,850円→4,840円、184,794円→3,630円（一番下の段だけ変わる）', () => {
+    eq(TK.withholding(2027, 218850), 4840);
+    eq(TK.withholding(2027, 184794), 3630);
+    eq(TK.withholding(2028, 184794), TK.withholding(2027, 184794));   // 2028年の表は未公表
+  });
+  test('給与所得（令和8・9年分の表）：国税庁の表と同じ値', () => {
+    const cases = [[740999, 0], [741000, 1000], [2190999, 1450999], [2191000, 1451000], [2199999, 1456000],
+      [2203999, 1460000], [3599999, 2437200], [3600000, 2440000], [6600000, 4840000], [7654321, 5788888]];
+    cases.forEach(([s, v]) => eq(TK.salaryIncome(s), v, String(s)));
+  });
+  test('年末調整：収入300万円・社会保険料45万円 → 年税額27,000円（27,056.5円の100円未満切り捨て）', () => {
+    const y = TK.yearEndTax(3000000, 450000);
+    eq([y.income, y.taxable, y.tax], [2020000, 530000, 27000]);
+    eq(TK.basicIncomeTax(4890000), 1040000);
+    eq(TK.basicIncomeTax(4890001), 670000);
+  });
+  test('住民税：同じ条件で116,500円、6月9,800円・7月から9,700円', () => {
+    const r = TK.residentTax(3000000, 450000);
+    eq([r.taxable, r.city, r.pref, r.forest, r.total, r.june, r.monthly], [1140000, 69900, 45600, 1000, 116500, 9800, 9700]);
+    eq(TK.residentTax(1000000, 0).total, 0);   // 給与所得26万円は非課税
+  });
+  test('2026年4月入社・東京・月給22万円＋通勤1万円：公式の計算方法で手計算した例と同じ', () => {
+    const s = TK.simulate(TK.normalizeInput({ pay: '220000', commute: '10000', pref: '13', year: '2026' }));
+    eq(s.std, 240000);
+    eq(s.rows.map(r => r.net), [223840, 190994, 191164, 185564, 186664]);
+    eq(s.rows.map(r => r.tax), [5010, 3800, 3630, 3630, 3630]);
+    eq([s.withheld, s.yearEnd.tax, s.refund, s.decemberNet], [35410, 0, 35410, 226404]);
+    eq([s.social1, s.resident.taxable, s.resident.total, s.resident.june, s.resident.monthly], [282798, 527000, 55100, 5600, 4500]);
+    eq(s.assumed.length, 0);
+  });
+  test('2027年4月入社：4月4,840円・5月から3,630円、年末調整で33,880円戻る、2028年の表は2027年で計算', () => {
+    const s = TK.simulate(TK.normalizeInput({ pay: '220000', commute: '10000', pref: '13', year: '2027' }));
+    eq(s.rows.map(r => r.tax), [4840, 3630, 3630, 3630, 3630]);
+    eq([s.rows[0].net, s.rows[1].net, s.refund, s.decemberNet], [224010, 191164, 33880, 225044]);
+    eq([s.rows[3].net, s.rows[4].net], [185564, 186664]);
+    eq(s.assumed.length, 1);
+  });
+  test('手取りの合計は、引かれる額と合う', () => {
+    [180000, 250000, 400000].forEach(pay => {
+      const s = TK.simulate(TK.normalizeInput({ pay: String(pay), commute: '15000', pref: '27', year: '2027' }));
+      s.rows.forEach(r => eq(r.gross - r.deductions, r.net, pay + ' ' + r.key));
+      eq(s.firstYearNet, s.rows[0].net + 8 * s.rows[1].net + s.refund);
+    });
+  });
+  test('入力のチェック', () => {
+    eq(TK.validate(TK.normalizeInput({ pay: '220000', commute: '', pref: '13', year: '2027' })), []);
+    eq(TK.validate(TK.normalizeInput({ pay: '100000', commute: '200000', pref: '13', year: '2027' })).length, 2);
+    eq(TK.normalizeInput({ pay: '220000', pref: 'xx', year: '1999' }), { pay: 220000, commute: 0, prefCode: '13', year: 2027 });
+    eq(TK.validate(TK.normalizeInput({ pay: '', pref: '13', year: '2027' })).length, 1);
+  });
+  test('「22.5」のように万円で入れたら円に直す', () => {
+    eq(TK.normalizeInput({ pay: '22.5', pref: '13', year: '2027' }).pay, 225000);
+    eq(TK.normalizeInput({ pay: '22', pref: '13', year: '2027' }).pay, 220000);
+    eq(TK.normalizeInput({ pay: '1000', pref: '13', year: '2027' }).pay, 1000);
+  });
+  test('ページの早見表（東京都・通勤手当なし・2027年4月入社）と同じ値：22万円・25万円', () => {
+    const s22 = TK.simulate(TK.normalizeInput({ pay: '220000', commute: '', pref: '13', year: '2027' }));
+    eq([s22.rows[0].net, s22.rows[1].net, s22.refund, s22.rows[4].net], [214060, 183952, 34680, 179252]);
+    const s25 = TK.simulate(TK.normalizeInput({ pay: '250000', commute: '', pref: '13', year: '2027' }));
+    eq([s25.rows[0].net, s25.rows[1].net, s25.refund, s25.rows[4].net], [242840, 207266, 35130, 200766]);
+  });
+  test('都道府県の順位：1位新潟県184,636円、47位佐賀県183,212円（月給22万円）、同じ料率は同じ順位', () => {
+    const list = TK.byPrefecture(TK.normalizeInput({ pay: '220000', commute: '', pref: '13', year: '2027' }));
+    eq(list.length, 47);
+    eq([list[0].name, list[0].net, list[46].name, list[46].net, list[46].rank], ['新潟県', 184636, '佐賀県', 183212, 47]);
+    eq(list[0].firstYearNet - list[46].firstYearNet, 11792);
+    const tokyo = list.find(r => r.code === '13');
+    const aomori = list.find(r => r.code === '02');
+    eq([tokyo.rank, aomori.rank, tokyo.net], [21, 21, 183952]);
+  });
+
+  const failed = results.filter(r => !r.ok);
+  const summary = document.getElementById('summary');
+  summary.textContent = failed.length ? failed.length + ' 件失敗 / ' + results.length + ' 件' : 'ALL PASS ' + results.length;
+  summary.className = failed.length ? 'fail' : 'pass';
+  const list = document.getElementById('results');
+  results.forEach(r => {
+    const li = document.createElement('li');
+    li.className = r.ok ? 'pass' : 'fail';
+    li.textContent = (r.ok ? '✓ ' : '✗ ') + r.name + (r.ok ? '' : ' — ' + r.msg);
+    list.appendChild(li);
+  });
+})();
+</script>
+</body>
+</html>

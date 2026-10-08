@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>初任給の手取り計算機｜新卒の4月・5月・2年目の手取りを月ごとに</title>
+<meta name="description" content="初任給（月給）を入れるだけで、新卒1年目の4月・5月から・12月の年末調整・2年目6月からの住民税まで、手取りを月ごとに計算します。2026年度の保険料率、子ども・子育て支援金、令和8年度の税制改正に対応。初任給別の早見表と、都道府県による違いの表つき。無料・登録不要。">
+<link rel="canonical" href="https://yuno-lab.com/shoninkyu/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="初任給の手取り計算機">
+<meta property="og:description" content="新卒1年目の4月・5月から・12月の年末調整・2年目6月からの住民税まで、手取りを月ごとに計算します。2026年度の料率に対応。">
+<meta property="og:url" content="https://yuno-lab.com/shoninkyu/">
+<meta property="og:image" content="https://yuno-lab.com/shoninkyu/og.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#d9480f">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "初任給の手取り計算機",
+  "url": "https://yuno-lab.com/shoninkyu/",
+  "description": "初任給と勤務地から、新卒1年目の4月・5月から・年末調整・2年目6月からの住民税まで、手取りを月ごとに計算するWebツール。2026年度の保険料率と令和8年度の税制改正に対応。",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "inLanguage": "ja",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" }
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7280043806672538"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+<nav class="topnav" aria-label="サイト内">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="favicon.svg" alt="" width="26" height="26">初任給の手取り計算機</a>
+    <ul>
+      <li><a class="navlink" href="index.html" aria-current="page">計算する</a></li>
+      <li><a class="navlink" href="#table">早見表</a></li>
+      <li><a class="navlink" href="/">yuno-lab</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="site-header">
+  <div class="wrap">
+    <h1>初任給の手取り計算機</h1>
+    <p class="lead">初任給（月給）を入れるだけで、4月・5月から・12月の年末調整・2年目6月からの住民税まで、新卒の手取りを月ごとに計算します。2026年度の保険料率と税制改正に対応しています。</p>
+    <p class="pr-note">本ページはプロモーションを含みます。</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="card" id="form-section" aria-labelledby="form-title">
+    <h2 id="form-title">あなたの初任給</h2>
+    <form id="calc-form" novalidate>
+      <p class="error" id="form-error" role="alert" hidden></p>
+
+      <div class="field-grid">
+        <label class="field">
+          <span class="field-name">初任給（月給）</span>
+          <span class="num"><input type="number" name="pay" inputmode="numeric" min="150000" max="1000000" step="1" placeholder="225000" required><span class="unit">円</span></span>
+          <span class="hint">通勤手当を除いた額です。「22.5」のように万円で入れても計算できます。</span>
+        </label>
+
+        <label class="field">
+          <span class="field-name">通勤手当<small>わかれば</small></span>
+          <span class="num"><input type="number" name="commute" inputmode="numeric" min="0" max="150000" step="1" placeholder="10000"><span class="unit">円／月</span></span>
+          <span class="hint">空欄なら0円で計算します。</span>
+        </label>
+
+        <label class="field">
+          <span class="field-name">働く都道府県</span>
+          <select name="pref" id="pref-select" class="select-wide"></select>
+          <span class="hint">健康保険の料率が都道府県で違います。</span>
+        </label>
+      </div>
+
+      <fieldset class="form-field">
+        <legend>入社する年</legend>
+        <div class="seg seg-compact">
+          <label><input type="radio" name="year" value="2026"><span>2026年4月</span></label>
+          <label><input type="radio" name="year" value="2027" checked><span>2027年4月</span></label>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="primary">計算する</button>
+    </form>
+  </section>
+
+  <section id="result" aria-labelledby="result-title" hidden>
+    <div class="card">
+      <h2 id="result-title">毎月の手取り</h2>
+      <p class="summary-meta" id="summary-meta"></p>
+      <p class="big-range" id="big-range"></p>
+      <ul class="summary-list fact-list" id="fact-list"></ul>
+      <p id="first-year"></p>
+      <div class="callout" id="why-box"></div>
+      <p class="hint" id="assume-note"></p>
+      <div class="actions">
+        <button type="button" class="secondary" id="share-btn">リンクをコピー</button>
+      </div>
+      <div class="share-box" id="share-box" hidden>
+        <input type="text" id="share-url" readonly aria-label="共有リンク">
+        <p class="share-status" id="share-status" role="status"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>月ごとの内訳</h2>
+      <div class="table-wrap">
+        <table class="data-table" id="detail-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="hint" id="detail-note"></p>
+      <p class="hint" id="pref-note"></p>
+    </div>
+  </section>
+
+  <section class="pr-box" aria-labelledby="pr-title">
+    <h2 id="pr-title"><span class="pr-label">PR</span>入社までに用意するもの</h2>
+    <p>お金のことを1冊で知っておきたい人向けの本と、仕事で使うかばん・名刺入れです。</p>
+    <ul class="pr-links">
+      <li><a href="https://hb.afl.rakuten.co.jp/hgc/584a279b.2b83ca67.584a279c.b426829b/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E7%25A4%25BE%25E4%25BC%259A%25E4%25BA%25BA1%25E5%25B9%25B4%25E7%259B%25AE%2B%25E3%2581%258A%25E9%2587%2591%2F&amp;link_type=text" target="_blank" rel="nofollow sponsored noopener">社会人1年目のお金の本<small>税金・保険・貯金の基本。楽天市場で見る</small></a></li>
+      <li><a href="https://hb.afl.rakuten.co.jp/hgc/584a279b.2b83ca67.584a279c.b426829b/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E3%2583%2593%25E3%2582%25B8%25E3%2583%258D%25E3%2582%25B9%25E3%2583%2590%25E3%2583%2583%25E3%2582%25B0%2B%25E6%2596%25B0%25E7%25A4%25BE%25E4%25BC%259A%25E4%25BA%25BA%2F&amp;link_type=text" target="_blank" rel="nofollow sponsored noopener">ビジネスバッグ<small>A4の書類とパソコンが入るもの。楽天市場で見る</small></a></li>
+      <li><a href="https://hb.afl.rakuten.co.jp/hgc/584a279b.2b83ca67.584a279c.b426829b/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E5%2590%258D%25E5%2588%25BA%25E5%2585%25A5%25E3%2582%258C%2B%25E6%2596%25B0%25E7%25A4%25BE%25E4%25BC%259A%25E4%25BA%25BA%2F&amp;link_type=text" target="_blank" rel="nofollow sponsored noopener">名刺入れ<small>入社してすぐ使う。楽天市場で見る</small></a></li>
+    </ul>
+    <p class="hint">楽天市場の検索結果に移動します。リンクから商品が購入されると、運営者に紹介料が入ります。値段や内容は購入先で確かめてください。</p>
+  </section>
+
+  <section class="card article" aria-labelledby="about-title">
+    <h2 id="about-title">新卒の手取りが月ごとに変わる理由</h2>
+    <p>新卒1年目の手取りは、毎月同じではありません。月給22万円・通勤手当1万円・東京都・2027年4月入社の例で見てみます。</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <caption>月給22万円＋通勤手当1万円（東京都・2027年4月入社）の手取り</caption>
+        <thead><tr><th scope="col"></th><th scope="col">2027年4月</th><th scope="col">5〜12月</th><th scope="col">2028年1〜5月</th><th scope="col">6月</th><th scope="col">7月から</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="nowrap">総支給</th><td class="cell-num">230,000円</td><td class="cell-num">230,000円</td><td class="cell-num">230,000円</td><td class="cell-num">230,000円</td><td class="cell-num">230,000円</td></tr>
+          <tr><th scope="row" class="nowrap">健康保険</th><td class="cell-num">0円</td><td class="cell-num">12,096円</td><td class="cell-num">12,096円</td><td class="cell-num">12,096円</td><td class="cell-num">12,096円</td></tr>
+          <tr><th scope="row" class="nowrap">厚生年金</th><td class="cell-num">0円</td><td class="cell-num">21,960円</td><td class="cell-num">21,960円</td><td class="cell-num">21,960円</td><td class="cell-num">21,960円</td></tr>
+          <tr><th scope="row" class="nowrap">雇用保険</th><td class="cell-num">1,150円</td><td class="cell-num">1,150円</td><td class="cell-num">1,150円</td><td class="cell-num">1,150円</td><td class="cell-num">1,150円</td></tr>
+          <tr><th scope="row" class="nowrap">所得税</th><td class="cell-num">4,840円</td><td class="cell-num">3,630円</td><td class="cell-num">3,630円</td><td class="cell-num">3,630円</td><td class="cell-num">3,630円</td></tr>
+          <tr><th scope="row" class="nowrap">住民税</th><td class="cell-num">0円</td><td class="cell-num">0円</td><td class="cell-num">0円</td><td class="cell-num">5,600円</td><td class="cell-num">4,500円</td></tr>
+          <tr><th scope="row" class="nowrap">引かれる額</th><td class="cell-num">5,990円</td><td class="cell-num">38,836円</td><td class="cell-num">38,836円</td><td class="cell-num">44,436円</td><td class="cell-num">43,336円</td></tr>
+          <tr class="is-main"><th scope="row" class="nowrap">手取り</th><td class="cell-num">224,010円</td><td class="cell-num">191,164円</td><td class="cell-num">191,164円</td><td class="cell-num">185,564円</td><td class="cell-num">186,664円</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hint">総支給は、月給と通勤手当の合計です。健康保険には、子ども・子育て支援金を含みます。</p>
+    <ol>
+      <li><strong>4月は多い</strong>：健康保険と厚生年金は、前の月の分を給料から引きます。そのため、最初の給料からは引かれません<a class="cite-chip" href="#ref-4">4</a>。引かれるのは雇用保険と所得税だけです。</li>
+      <li><strong>5月から減る</strong>：健康保険（子ども・子育て支援金を含む）と厚生年金が引かれ始め、手取りは約3万3千円減ります。</li>
+      <li><strong>12月に戻る</strong>：毎月の所得税は、同じ給料が1年続くとして引かれます。1年目は4〜12月の9か月分しか収入がないので、引かれすぎになります。この例では、年末調整で33,880円（引かれた所得税の全部）が戻り、12月の手取りは225,044円になります。会社によっては1月の給料で戻ります。</li>
+      <li><strong>2年目の6月から減る</strong>：住民税は、前の年の収入にかかり、6月から翌年5月までの給料から引かれます。1年目の収入にかかる住民税（この例では1年で55,100円）が、2年目の6月から引かれ始めます。</li>
+    </ol>
+    <p>3年目の6月からは、2年目の12か月分の収入にかかる住民税になるので、住民税はさらに増えます。</p>
+
+    <h2 id="table">初任給別の手取り早見表</h2>
+    <p>東京都・通勤手当なし・2027年4月入社の場合です。自分の条件で計算するときは、上の計算機を使ってください。</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <caption>初任給ごとの手取り（東京都・通勤手当なし・2027年4月入社）</caption>
+        <thead><tr><th scope="col">初任給</th><th scope="col">4月</th><th scope="col">5月から</th><th scope="col">年末調整で戻る額</th><th scope="col">2年目7月から</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="nowrap">18万円</th><td class="cell-num">175,680円</td><td class="cell-num">151,288円</td><td class="cell-num">21,580円</td><td class="cell-num">149,188円</td></tr>
+          <tr><th scope="row" class="nowrap">19万円</th><td class="cell-num">185,270円</td><td class="cell-num">159,389円</td><td class="cell-num">25,380円</td><td class="cell-num">156,589円</td></tr>
+          <tr><th scope="row" class="nowrap">20万円</th><td class="cell-num">194,870円</td><td class="cell-num">167,500円</td><td class="cell-num">29,090円</td><td class="cell-num">164,100円</td></tr>
+          <tr><th scope="row" class="nowrap">21万円</th><td class="cell-num">204,460円</td><td class="cell-num">174,362円</td><td class="cell-num">31,450円</td><td class="cell-num">170,362円</td></tr>
+          <tr><th scope="row" class="nowrap">22万円</th><td class="cell-num">214,060円</td><td class="cell-num">183,952円</td><td class="cell-num">34,680円</td><td class="cell-num">179,252円</td></tr>
+          <tr><th scope="row" class="nowrap">23万円</th><td class="cell-num">223,650円</td><td class="cell-num">190,814円</td><td class="cell-num">36,740円</td><td class="cell-num">185,514円</td></tr>
+          <tr><th scope="row" class="nowrap">24万円</th><td class="cell-num">233,240円</td><td class="cell-num">200,404円</td><td class="cell-num">35,380円</td><td class="cell-num">194,404円</td></tr>
+          <tr><th scope="row" class="nowrap">25万円</th><td class="cell-num">242,840円</td><td class="cell-num">207,266円</td><td class="cell-num">35,130円</td><td class="cell-num">200,766円</td></tr>
+          <tr><th scope="row" class="nowrap">26万円</th><td class="cell-num">252,430円</td><td class="cell-num">216,856円</td><td class="cell-num">35,170円</td><td class="cell-num">209,856円</td></tr>
+          <tr><th scope="row" class="nowrap">27万円</th><td class="cell-num">262,030円</td><td class="cell-num">223,718円</td><td class="cell-num">35,520円</td><td class="cell-num">216,418円</td></tr>
+          <tr><th scope="row" class="nowrap">28万円</th><td class="cell-num">271,620円</td><td class="cell-num">233,308円</td><td class="cell-num">35,560円</td><td class="cell-num">225,508円</td></tr>
+          <tr><th scope="row" class="nowrap">29万円</th><td class="cell-num">281,220円</td><td class="cell-num">240,170円</td><td class="cell-num">35,910円</td><td class="cell-num">231,970円</td></tr>
+          <tr><th scope="row" class="nowrap">30万円</th><td class="cell-num">290,810円</td><td class="cell-num">249,760円</td><td class="cell-num">35,950円</td><td class="cell-num">241,060円</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hint">通勤手当がある場合、手取りはその分増えますが、健康保険と厚生年金も少し上がることがあります。保険料は、通勤手当を含めた額で決まるからです<a class="cite-chip" href="#ref-5">5</a>。</p>
+
+    <h2 id="pref">都道府県で手取りはいくら違う？</h2>
+    <p>中小企業の多くが入る協会けんぽの健康保険料率は、都道府県ごとに決まります。令和8年度は、一番低い新潟県が9.21%、一番高い佐賀県が10.55%です<a class="cite-chip" href="#ref-1">1</a>。</p>
+    <p>月給22万円（通勤手当なし）だと、5月からの手取りは、新潟県が184,636円、佐賀県が183,212円で、毎月1,424円違います。1年目（4〜12月）の合計では11,792円の差になります。</p>
+    <details class="more">
+      <summary>47都道府県の手取りを見る</summary>
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>5月からの手取り（通勤手当なし・2027年4月入社）。手取りの多い順</caption>
+          <thead><tr><th scope="col">順位</th><th scope="col">都道府県</th><th scope="col">健康保険料率</th><th scope="col">月給22万円</th><th scope="col">月給25万円</th></tr></thead>
+          <tbody>
+            <tr><td class="cell-num">1</td><th scope="row" class="nowrap">新潟県</th><td class="cell-num">9.21%</td><td class="cell-num">184,636円</td><td class="cell-num">208,068円</td></tr>
+            <tr><td class="cell-num">2</td><th scope="row" class="nowrap">沖縄県</th><td class="cell-num">9.44%</td><td class="cell-num">184,393円</td><td class="cell-num">207,779円</td></tr>
+            <tr><td class="cell-num">3</td><th scope="row" class="nowrap">福島県</th><td class="cell-num">9.50%</td><td class="cell-num">184,327円</td><td class="cell-num">207,701円</td></tr>
+            <tr><td class="cell-num">4</td><th scope="row" class="nowrap">岩手県</th><td class="cell-num">9.51%</td><td class="cell-num">184,316円</td><td class="cell-num">207,688円</td></tr>
+            <tr><td class="cell-num">5</td><th scope="row" class="nowrap">茨城県</th><td class="cell-num">9.52%</td><td class="cell-num">184,305円</td><td class="cell-num">207,675円</td></tr>
+            <tr><td class="cell-num">6</td><th scope="row" class="nowrap">山梨県</th><td class="cell-num">9.55%</td><td class="cell-num">184,272円</td><td class="cell-num">207,636円</td></tr>
+            <tr><td class="cell-num">7</td><th scope="row" class="nowrap">富山県</th><td class="cell-num">9.59%</td><td class="cell-num">184,228円</td><td class="cell-num">207,594円</td></tr>
+            <tr><td class="cell-num">8</td><th scope="row" class="nowrap">静岡県</th><td class="cell-num">9.61%</td><td class="cell-num">184,206円</td><td class="cell-num">207,568円</td></tr>
+            <tr><td class="cell-num">9</td><th scope="row" class="nowrap">長野県</th><td class="cell-num">9.63%</td><td class="cell-num">184,184円</td><td class="cell-num">207,542円</td></tr>
+            <tr><td class="cell-num">10</td><th scope="row" class="nowrap">埼玉県</th><td class="cell-num">9.67%</td><td class="cell-num">184,140円</td><td class="cell-num">207,490円</td></tr>
+            <tr><td class="cell-num">11</td><th scope="row" class="nowrap">群馬県</th><td class="cell-num">9.68%</td><td class="cell-num">184,129円</td><td class="cell-num">207,477円</td></tr>
+            <tr><td class="cell-num">12</td><th scope="row" class="nowrap">石川県</th><td class="cell-num">9.70%</td><td class="cell-num">184,117円</td><td class="cell-num">207,451円</td></tr>
+            <tr><td class="cell-num">13</td><th scope="row" class="nowrap">福井県</th><td class="cell-num">9.71%</td><td class="cell-num">184,106円</td><td class="cell-num">207,438円</td></tr>
+            <tr><td class="cell-num">14</td><th scope="row" class="nowrap">千葉県</th><td class="cell-num">9.73%</td><td class="cell-num">184,084円</td><td class="cell-num">207,412円</td></tr>
+            <tr><td class="cell-num">15</td><th scope="row" class="nowrap">山形県</th><td class="cell-num">9.75%</td><td class="cell-num">184,062円</td><td class="cell-num">207,386円</td></tr>
+            <tr><td class="cell-num">16</td><th scope="row" class="nowrap">三重県</th><td class="cell-num">9.77%</td><td class="cell-num">184,040円</td><td class="cell-num">207,360円</td></tr>
+            <tr><td class="cell-num">16</td><th scope="row" class="nowrap">宮崎県</th><td class="cell-num">9.77%</td><td class="cell-num">184,040円</td><td class="cell-num">207,360円</td></tr>
+            <tr><td class="cell-num">18</td><th scope="row" class="nowrap">広島県</th><td class="cell-num">9.78%</td><td class="cell-num">184,029円</td><td class="cell-num">207,347円</td></tr>
+            <tr><td class="cell-num">19</td><th scope="row" class="nowrap">岐阜県</th><td class="cell-num">9.80%</td><td class="cell-num">184,007円</td><td class="cell-num">207,321円</td></tr>
+            <tr><td class="cell-num">20</td><th scope="row" class="nowrap">栃木県</th><td class="cell-num">9.82%</td><td class="cell-num">183,985円</td><td class="cell-num">207,305円</td></tr>
+            <tr><td class="cell-num">21</td><th scope="row" class="nowrap">青森県</th><td class="cell-num">9.85%</td><td class="cell-num">183,952円</td><td class="cell-num">207,266円</td></tr>
+            <tr><td class="cell-num">21</td><th scope="row" class="nowrap">東京都</th><td class="cell-num">9.85%</td><td class="cell-num">183,952円</td><td class="cell-num">207,266円</td></tr>
+            <tr><td class="cell-num">23</td><th scope="row" class="nowrap">鳥取県</th><td class="cell-num">9.86%</td><td class="cell-num">183,941円</td><td class="cell-num">207,253円</td></tr>
+            <tr><td class="cell-num">24</td><th scope="row" class="nowrap">滋賀県</th><td class="cell-num">9.88%</td><td class="cell-num">183,919円</td><td class="cell-num">207,227円</td></tr>
+            <tr><td class="cell-num">25</td><th scope="row" class="nowrap">京都府</th><td class="cell-num">9.89%</td><td class="cell-num">183,908円</td><td class="cell-num">207,214円</td></tr>
+            <tr><td class="cell-num">26</td><th scope="row" class="nowrap">奈良県</th><td class="cell-num">9.91%</td><td class="cell-num">183,886円</td><td class="cell-num">207,188円</td></tr>
+            <tr><td class="cell-num">27</td><th scope="row" class="nowrap">神奈川県</th><td class="cell-num">9.92%</td><td class="cell-num">183,875円</td><td class="cell-num">207,175円</td></tr>
+            <tr><td class="cell-num">28</td><th scope="row" class="nowrap">愛知県</th><td class="cell-num">9.93%</td><td class="cell-num">183,864円</td><td class="cell-num">207,162円</td></tr>
+            <tr><td class="cell-num">29</td><th scope="row" class="nowrap">島根県</th><td class="cell-num">9.94%</td><td class="cell-num">183,853円</td><td class="cell-num">207,149円</td></tr>
+            <tr><td class="cell-num">30</td><th scope="row" class="nowrap">愛媛県</th><td class="cell-num">9.98%</td><td class="cell-num">183,819円</td><td class="cell-num">207,097円</td></tr>
+            <tr><td class="cell-num">31</td><th scope="row" class="nowrap">秋田県</th><td class="cell-num">10.01%</td><td class="cell-num">183,786円</td><td class="cell-num">207,058円</td></tr>
+            <tr><td class="cell-num">32</td><th scope="row" class="nowrap">香川県</th><td class="cell-num">10.02%</td><td class="cell-num">183,775円</td><td class="cell-num">207,055円</td></tr>
+            <tr><td class="cell-num">33</td><th scope="row" class="nowrap">岡山県</th><td class="cell-num">10.05%</td><td class="cell-num">183,742円</td><td class="cell-num">207,016円</td></tr>
+            <tr><td class="cell-num">33</td><th scope="row" class="nowrap">高知県</th><td class="cell-num">10.05%</td><td class="cell-num">183,742円</td><td class="cell-num">207,016円</td></tr>
+            <tr><td class="cell-num">35</td><th scope="row" class="nowrap">和歌山県</th><td class="cell-num">10.06%</td><td class="cell-num">183,731円</td><td class="cell-num">207,003円</td></tr>
+            <tr><td class="cell-num">35</td><th scope="row" class="nowrap">長崎県</th><td class="cell-num">10.06%</td><td class="cell-num">183,731円</td><td class="cell-num">207,003円</td></tr>
+            <tr><td class="cell-num">37</td><th scope="row" class="nowrap">熊本県</th><td class="cell-num">10.08%</td><td class="cell-num">183,709円</td><td class="cell-num">206,977円</td></tr>
+            <tr><td class="cell-num">37</td><th scope="row" class="nowrap">大分県</th><td class="cell-num">10.08%</td><td class="cell-num">183,709円</td><td class="cell-num">206,977円</td></tr>
+            <tr><td class="cell-num">39</td><th scope="row" class="nowrap">宮城県</th><td class="cell-num">10.10%</td><td class="cell-num">183,687円</td><td class="cell-num">206,951円</td></tr>
+            <tr><td class="cell-num">40</td><th scope="row" class="nowrap">福岡県</th><td class="cell-num">10.11%</td><td class="cell-num">183,676円</td><td class="cell-num">206,938円</td></tr>
+            <tr><td class="cell-num">41</td><th scope="row" class="nowrap">兵庫県</th><td class="cell-num">10.12%</td><td class="cell-num">183,665円</td><td class="cell-num">206,925円</td></tr>
+            <tr><td class="cell-num">42</td><th scope="row" class="nowrap">大阪府</th><td class="cell-num">10.13%</td><td class="cell-num">183,654円</td><td class="cell-num">206,912円</td></tr>
+            <tr><td class="cell-num">42</td><th scope="row" class="nowrap">鹿児島県</th><td class="cell-num">10.13%</td><td class="cell-num">183,654円</td><td class="cell-num">206,912円</td></tr>
+            <tr><td class="cell-num">44</td><th scope="row" class="nowrap">山口県</th><td class="cell-num">10.15%</td><td class="cell-num">183,632円</td><td class="cell-num">206,886円</td></tr>
+            <tr><td class="cell-num">45</td><th scope="row" class="nowrap">徳島県</th><td class="cell-num">10.24%</td><td class="cell-num">183,543円</td><td class="cell-num">206,779円</td></tr>
+            <tr><td class="cell-num">46</td><th scope="row" class="nowrap">北海道</th><td class="cell-num">10.28%</td><td class="cell-num">183,499円</td><td class="cell-num">206,727円</td></tr>
+            <tr><td class="cell-num">47</td><th scope="row" class="nowrap">佐賀県</th><td class="cell-num">10.55%</td><td class="cell-num">183,212円</td><td class="cell-num">206,386円</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+    <p class="hint">大企業に多い健康保険組合は、料率も、会社と本人が払う割合も、組合ごとに違います。組合に入る人は、この表とは違う額になります。</p>
+
+    <h2>よくある質問</h2>
+    <div class="faq">
+      <details><summary>給料日が翌月の会社でも同じですか？</summary><p>この計算機は、その月の給料をその月に払う会社（当月払い）で計算しています。4月分の給料を5月に払う会社（翌月払い）では、最初の給料から4月分の健康保険と厚生年金が引かれるので、「4月」のように多くはなりません<a class="cite-chip" href="#ref-4">4</a>。</p></details>
+      <details><summary>年末調整で、どれくらい戻りますか？</summary><p>2026年の税制改正で、基礎控除と給与所得控除が大きく増えました<a class="cite-chip" href="#ref-9">9</a>。そのため、月給22万円くらいまでなら、1年目の所得税は0円になり、毎月引かれた所得税が全部戻ります。それより多い人も、引かれた分の大部分が戻ります。戻る月は、12月か1月の給料です。</p></details>
+      <details><summary>ボーナスや残業代は入っていますか？</summary><p>入っていません。ボーナスからも、健康保険・厚生年金・雇用保険・所得税が引かれます。また、4〜6月の残業代が多いと、その3か月の平均で保険料が決め直され、10月の給料から保険料が上がることがあります（定時決定）。</p></details>
+      <details><summary>健康保険組合に入る場合は？</summary><p>大企業に多い健康保険組合は、料率と、会社と本人の負担の割合が組合ごとに違います。この計算機は協会けんぽの料率で計算しているので、実際の手取りと違うことがあります。子ども・子育て支援金（0.23%）は、どの健康保険でも同じです<a class="cite-chip" href="#ref-2">2</a>。</p></details>
+      <details><summary>給与明細の所得税と、数十円違います</summary><p>毎月の所得税の出し方は2つあり、会社によって違います。税額表（月額表）を使う方法と、計算式を使う方法（電子計算機等の特例）です<a class="cite-chip" href="#ref-6">6</a>。この計算機は計算式を使っています。どちらも正しい方法で、差は年末調整でなくなります。</p></details>
+      <details><summary>住民税は、住む市区町村で違いますか？</summary><p>ほぼ同じです。ただ、均等割に上乗せをしている県や市があり、年に数百円から千円ほど高くなることがあります（東京23区は上乗せがありません）。この計算機は上乗せを入れていません。</p></details>
+      <details><summary>学生のときのアルバイトの住民税は？</summary><p>入社する前の年のアルバイト収入が多かった人は、1年目の6月から住民税が引かれることがあります。2026年の収入なら、東京23区などでは119万円を超えるとかかります<a class="cite-chip" href="#ref-11">11</a>。この計算機は、アルバイトの収入がない場合です。</p></details>
+      <details><summary>家族を扶養している場合は？</summary><p>この計算機は、独身で扶養している家族がいない場合です。扶養している家族がいると、所得税と住民税が少なくなります。</p></details>
+    </div>
+
+    <h2 id="method">計算のしかた</h2>
+    <ul>
+      <li><strong>健康保険</strong>：標準報酬月額（月給と通勤手当の合計で決まる）×（協会けんぽの都道府県の料率＋子ども・子育て支援金0.23%）の半分<a class="cite-chip" href="#ref-1">1</a><a class="cite-chip" href="#ref-2">2</a><a class="cite-chip" href="#ref-5">5</a>。</li>
+      <li><strong>厚生年金</strong>：標準報酬月額×18.3%の半分<a class="cite-chip" href="#ref-3">3</a>。保険料の1円未満は、50銭以下を切り捨て、50銭を超えると切り上げます。</li>
+      <li><strong>雇用保険</strong>：通勤手当を含めた給料×0.5%<a class="cite-chip" href="#ref-7">7</a>。</li>
+      <li><strong>所得税</strong>：給料から非課税の通勤手当と社会保険料を引いた額で、国税庁の「電子計算機等を使用して源泉徴収税額を計算する方法」で計算します<a class="cite-chip" href="#ref-6">6</a>。2027年1月からは令和9年分の方法です<a class="cite-chip" href="#ref-8">8</a>。</li>
+      <li><strong>年末調整</strong>：4〜12月の収入と、引かれた社会保険料から、1年の所得税を出します。給与所得控除は最低74万円、基礎控除は104万円です（令和8・9年分）<a class="cite-chip" href="#ref-9">9</a><a class="cite-chip" href="#ref-10">10</a>。</li>
+      <li><strong>住民税</strong>：1年目の収入から、所得割10%と均等割4,000円、森林環境税1,000円を出します。基礎控除は43万円です。12で割った端数は、6月の分に入ります<a class="cite-chip" href="#ref-11">11</a><a class="cite-chip" href="#ref-12">12</a>。</li>
+    </ul>
+    <p>2027年度からの保険料率（健康保険・子ども・子育て支援金・雇用保険）と、2028年分の所得税の計算方法は、まだ公表されていません。公表されていない月は、2026年度の料率と2027年分の方法で計算しています。公表されたら更新します。</p>
+
+    <h2 id="refs">参考資料</h2>
+    <ol class="ref-list">
+      <li id="ref-1">全国健康保険協会「令和8年度の協会けんぽの保険料率は3月分（4月納付分）から改定されます」 <a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08/index.html">協会けんぽ</a>、「令和8年度保険料額表」 <a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/premium_prefectures/r08/">協会けんぽ</a></li>
+      <li id="ref-2">全国健康保険協会「協会けんぽの子ども・子育て支援金率について」 <a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/003/index.html">協会けんぽ</a></li>
+      <li id="ref-3">日本年金機構「保険料額表（令和2年9月分～）」 <a href="https://www.nenkin.go.jp/service/kounen/hokenryo/ryogaku/ryogakuhyo/20200825.html">日本年金機構</a>、「保険料の計算方法について」 <a href="https://www.nenkin.go.jp/service/kounen/hokenryo/nofu/20121026.html">日本年金機構</a></li>
+      <li id="ref-4">日本年金機構「厚生年金保険料等の納付」 <a href="https://www.nenkin.go.jp/service/kounen/hokenryo/nofu/nofu.html">日本年金機構</a></li>
+      <li id="ref-5">日本年金機構「資格取得時の決定」 <a href="https://www.nenkin.go.jp/service/kounen/hokenryo/hoshu/20120330.html">日本年金機構</a></li>
+      <li id="ref-6">国税庁「令和8年分 源泉徴収税額表」 <a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/01.htm">国税庁</a></li>
+      <li id="ref-7">厚生労働省「雇用保険料率について」 <a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000108634.html">厚生労働省</a></li>
+      <li id="ref-8">国税庁「令和9年分 源泉徴収税額表」 <a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2027/01.htm">国税庁</a></li>
+      <li id="ref-9">国税庁「令和８年度税制改正による所得税の基礎控除の引上げ等について」 <a href="https://www.nta.go.jp/users/gensen/2026kiso/index.htm">国税庁</a></li>
+      <li id="ref-10">国税庁「令和8年分 年末調整のしかた」 <a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/01.htm">国税庁</a></li>
+      <li id="ref-11">総務省「個人住民税」 <a href="https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/150790_06.html">総務省</a>、令和8年度税制改正の概要 <a href="https://www.soumu.go.jp/main_content/001066239.pdf">総務省（PDF）</a></li>
+      <li id="ref-12">地方税法 <a href="https://laws.e-gov.go.jp/law/325AC0000000226">e-Gov法令検索</a></li>
+    </ol>
+
+    <h2 id="disclaimer">免責事項</h2>
+    <div class="disclaimer">
+      <p>この計算機の結果は、公表されている料率と計算方法から出した目安です。実際の手取りは、会社の給与の計算方法、入る健康保険、住む市区町村、残業代や手当によって変わります。正確な額は、給与明細で確かめてください。</p>
+      <p>このツールの利用によって生じた損害について、運営者は責任を負いません。</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a href="/">yuno-lab トップ</a>
+    <span aria-hidden="true">・</span>
+    <a href="/about.html">このサイトについて</a>
+    <span aria-hidden="true">・</span>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <span aria-hidden="true">・</span>
+    <a href="#disclaimer">免責事項</a>
+  </div>
+</footer>
+
+<script src="js/tk-data.js"></script>
+<script src="js/tk-calc.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
